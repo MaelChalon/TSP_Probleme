@@ -17,7 +17,6 @@ def main() -> None:
     test_tour = list(range(len(cities)))
 
     result = client.submit_solution(
-        student_id="test_client_python",
         instance_id=test_instance_id,
         tour=test_tour,
     )

@@ -4,6 +4,7 @@ from typing import Any
 
 import requests
 
+STUDENT_ID = "MILLOT_CHALON"
 
 class ClientHTTPError(Exception):
     """Raised when the HTTP client cannot complete a valid request."""
@@ -25,13 +26,12 @@ class ClientHTTP:
 
     def submit_solution(
         self,
-        student_id: str,
         instance_id: str,
         tour: list[int],
     ) -> dict[str, Any]:
         """POST /submit"""
         payload = {
-            "student_id": student_id,
+            "student_id": STUDENT_ID,
             "instance_id": instance_id,
             "tour": tour,
         }
