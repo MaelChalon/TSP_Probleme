@@ -1,7 +1,8 @@
 import random
 import numpy as np
 from tools import *
-
+POP_SIZE = 100
+ITER = 1000
 
 class City:
     id: int
@@ -18,13 +19,13 @@ def create_random_population(cities : list[City], size : int):
     pop = []
     for _ in range(size):
         pop.append(create_sample_random(cities))
-    print(f"New population created : {pop}")
+    # print(f"New population created : {pop}")
     return pop
 
 def create_sample_random(cities : list[City]):
     sample = cities
     shuffled = random.sample(sample, len(sample))
-    print(f"sample created : {shuffled}")
+    # print(f"sample created : {shuffled}")
     return shuffled
 
 def evaluate_population(population : list[list[City]]):
@@ -135,6 +136,8 @@ def solve_tsp(cities: list[City], size_pop: int, iterations: int):
     return result
 
 
-
-
-
+def solve_TSP_threaded(thread_id, cities):
+    path = solve_tsp(cities, POP_SIZE, ITER)
+    score = eval_dist(extract_coords(path))
+    # print(f"Result from thread {thread_id} : {score}")
+    return score, path

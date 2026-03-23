@@ -14,7 +14,9 @@ def main() -> None:
         for index, (longitude, latitude) in enumerate(cities)
     ]
 
-    result = solve_tsp(list_cities, 100, 1000)
+    # result = solve_tsp(list_cities, 100, 100)
+    r_threads = run_threads(10, solve_TSP_threaded, list_cities)
+    result = get_better_result(r_threads)
 
     http_result = [city.id for city in result]
 
