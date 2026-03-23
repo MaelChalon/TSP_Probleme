@@ -55,12 +55,6 @@ def roulette_select_population(evaluated_population: list[tuple[float, list[City
 
 # Tournament selection: pick the best individual from random subsets
 def tournament_select_population(evaluated_population: list[tuple[float, list[City]]], size, tournament_size=3):
-    """
-    evaluated_population: list of (distance, path)
-    size: number of individuals to select
-    tournament_size: number of random individuals in each tournament
-    returns: list of selected paths
-    """
     if size > len(evaluated_population):
         raise ValueError("Size > pop size")
     
