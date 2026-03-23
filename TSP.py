@@ -87,8 +87,8 @@ def mutation_insertion(individu: list[City]) -> list[City]:
 def mutation(
     population: list[list[City]],
     size_new_pop: int,
-    taux_mutation: float = 0.8,
-    type_mutation: str = "inversion",
+    taux_mutation: float = 0.5,
+    type_mutation: str = "swap",
 ) -> list[list[City]]:
     if not population:
         return []
@@ -120,7 +120,7 @@ def solve_tsp(cities: list[City], size_pop: int, iterations: int):
     for i in range(iterations):
         selected = roulette_select_population(eval_pop, size_pop // 2)
 
-        pop = mutation(selected, size_pop)
+        pop = mutation(selected, size_pop, )
 
         eval_pop = evaluate_population(pop)
 
