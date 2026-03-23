@@ -1,10 +1,10 @@
 import math
-def compute_city_distance(v1_long, v1_lat, v2_long, v2_lat):
+def compute_city_distance(v1_lat, v1_long, v2_lat, v2_long):
     #  Convert degrees to radians
-    lat_A = math.radians(lat_A)
-    lon_A = math.radians(lon_A)
-    lat_B = math.radians(lat_B)
-    lon_B = math.radians(lon_B)
+    lat_A = math.radians(v1_lat)
+    lon_A = math.radians(v1_long)
+    lat_B = math.radians(v2_lat)
+    lon_B = math.radians(v2_long)
 
     # Differences
     delta_lat = lat_B - lat_A
@@ -16,7 +16,7 @@ def compute_city_distance(v1_long, v1_lat, v2_long, v2_lat):
 
     return d
 
-def eval_dist(cities : list((float,float))):
+def eval_dist(cities : list[tuple[float,float]]):
     """
     points: list of (lat, lon) tuples in degrees
     returns: total distance (km) along the path
@@ -35,3 +35,7 @@ def eval_dist(cities : list((float,float))):
     lat_B, lon_B = cities[-1]
     total_dist += compute_city_distance(lat_A, lon_A, lat_B, lon_B)
     return total_dist
+
+
+def extract_coords(cities : list):
+    return  [city.coord for city in cities]
