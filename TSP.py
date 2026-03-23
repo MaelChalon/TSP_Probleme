@@ -32,10 +32,37 @@ def evaluate_population(population : list[list[City]]):
     result : list[tuple[float, list[City]]] = []
     for sample in population:
         elem : tuple[float, list[City]]
-        score = eval_dist(sample)
+        coords = extract_coords(sample)
+        score = eval_dist(coords)
         elem = (score, sample)
         result.append(elem)
     return result
+
+def roulette_select_population(evaluated_population: list[tuple[float, list[City]]], size):
+    """
+    evaluated_population: list of (distance, path)
+    returns: one (distance, path) selected via roulette
+    """
+
+    if size > len(evaluated_population):
+        raise ValueError("Size > pop size")
+    # Convert distances to weights (smaller distance = higher weight)
+    epsilon = 1e-9  # avoid division by zero
+    weights = [1 / (dist + epsilon) for dist, _ in evaluated_population]
+
+    total = sum(weights)
+
+    new_pop = []
+    for i in range(size):
+        print(f"DBG {i}")
+        r = random.uniform(0, total)
+        cumulative = 0.0
+        for (dist, path), w in zip(evaluated_population, weights):
+            cumulative += w
+            if r <= cumulative:
+                new_pop.append(path)
+                break
+    return new_pop
 
 def mutation_swap(individu: list[City]) -> list[City]:
     mutant = individu[:]
@@ -61,6 +88,7 @@ def mutation_insertion(individu: list[City]) -> list[City]:
 
 def mutation(
     population: list[list[City]],
+    size_new_pop: int,
     taux_mutation: float = 0.8,
     type_mutation: str = "inversion",
 ) -> list[list[City]]:
@@ -68,7 +96,7 @@ def mutation(
         return []
     nouvelle_population = [ind[:] for ind in population]
 
-    while len(nouvelle_population) < len(population):
+    while len(nouvelle_population) < size_new_pop:
         parent = random.choice(population)
         enfant = parent[:]
 
@@ -85,5 +113,36 @@ def mutation(
         nouvelle_population.append(enfant)
 
     return nouvelle_population
+
+client = ClientHTTP()
+test_instance_id = "regions"
+instance = client.get_instance(test_instance_id)
+
+raw_points = instance.get("cities", [])
+
+cities = [
+    City(index, (latitude, longitude))
+    for index, (longitude, latitude) in enumerate(raw_points)
+]
+
+pop =create_random_population(cities, 5)
+eval_pop = evaluate_population(pop)
+
+selected = roulette_select_population(eval_pop, 3)
+print("\n\nSELECTED : \n")
+i =0
+for c in selected:
+    i+=1
+    print(f"Path {i} : {c}")
+print()
+
+mutant = mutation(selected, 5)
+
+print("\n\nMUTANT : \n")
+i =0
+for m in mutant:
+    i+=1
+    print(f"Path {i} : {m}")
+
 
 
