@@ -15,24 +15,23 @@ class City:
     def __repr__(self):
         return f"City(id={self.id}, coord={self.coord})"
 
-
-def create_random_population(cities: list[City], size: int):
+def create_random_population(cities : list[City], size : int):
     pop = []
     for _ in range(size):
         pop.append(create_sample_random(cities))
     print(f"New population created : {pop}")
     return pop
 
-def create_sample_random(cities: list[City]):
+def create_sample_random(cities : list[City]):
     sample = cities
     shuffled = random.sample(sample, len(sample))
     print(f"sample created : {shuffled}")
     return shuffled
 
-def evaluate_population(population: list[list[City]]):
-    result: list[tuple[float, list[City]]] = []
+def evaluate_population(population : list[list[City]]):
+    result : list[tuple[float, list[City]]] = []
     for sample in population:
-        elem: tuple[float, list[City]]
+        elem : tuple[float, list[City]]
         score = eval_dist(sample)
         elem = (score, sample)
         result.append(elem)
