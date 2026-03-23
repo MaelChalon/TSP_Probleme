@@ -1,5 +1,5 @@
 import random
-
+from tools import *
 
 class City:
     id : int
@@ -23,6 +23,15 @@ def create_sample_random(cities : list[City]):
     shuffled = random.sample(sample, len(sample))
     print(f"sample created : {shuffled}")
     return shuffled
+
+def evaluate_population(population : list[list[City]]):
+    result : list[tuple[float, list[City]]] = []
+    for sample in population:
+        elem : tuple[float, list[City]]
+        score = eval_dist(sample)
+        elem = (score, sample)
+        result.append(elem)
+    return result
 
 points = [
     City(1, (48.8566, 2.3522)),
