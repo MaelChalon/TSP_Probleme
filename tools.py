@@ -1,4 +1,5 @@
 import math
+import threading
 def compute_city_distance(v1_lat, v1_long, v2_lat, v2_long):
     #  Convert degrees to radians
     lat_A = math.radians(v1_lat)
@@ -39,3 +40,37 @@ def eval_dist(cities : list[tuple[float,float]]):
 
 def extract_coords(cities : list):
     return  [city.coord for city in cities]
+
+
+def run_threads(N, func, cities):
+    """
+    Launch N threads that call solve_TSP in parallel.
+    Returns a list tab_thread with results at index = thread_id
+    """
+    tab_thread = [None] * N  # shared result list
+
+    def worker(tid):
+        res = func(tid, cities)      # compute
+        tab_thread[tid] = res     # store in correct position
+        print(f"Thread {tid} finished: {res[0]}")  # print immediately
+
+    threads = []
+    for tid in range(N):
+        t = threading.Thread(target=worker, args=(tid,))
+        threads.append(t)
+        t.start()
+
+    # Wait for all threads to finish
+    for t in threads:
+        t.join()
+
+    return tab_thread
+
+
+def get_better_result(data : list):
+    if not data:
+       raise ValueError("The input list is empty.")
+    
+    # Using min with key
+    _, path = min(data, key=lambda x: x[0])
+    return path
