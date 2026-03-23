@@ -1,27 +1,31 @@
 from clientHTTP.ClientHTTP import ClientHTTP
+from TSP import *
 
 
 def main() -> None:
     client = ClientHTTP()
-    instances = client.list_instances()
-    print("Instances disponibles :")
-    for instance_id, metadata in instances.items():
-        print(f"- {instance_id}: {metadata}")
 
     test_instance_id = "regions"
     instance = client.get_instance(test_instance_id)
-    print(f"\nInstance '{test_instance_id}' :")
-    print(instance)
 
     cities = instance.get("cities", [])
-    test_tour = list(range(len(cities)))
+    list_cities = [
+        City(index, (latitude, longitude))
+        for index, (longitude, latitude) in enumerate(cities)
+    ]
 
-    result = client.submit_solution(
-        instance_id=test_instance_id,
-        tour=test_tour,
-    )
-    print("\nRésultat de la soumission :")
-    print(result)
+    result = solve_tsp(list_cities, 100, 100)
+
+    http_result = [city.id for city in result]
+
+    score = eval_dist(extract_coords(result))
+    print(score)
+    print(http_result)
+
+    with open("resultats.txt", "a", encoding="utf-8") as file:
+        file.write(f"{test_instance_id} : {score}, {http_result}\n")
+
+
 
 if __name__ == "__main__":
     main()

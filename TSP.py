@@ -1,6 +1,5 @@
 import random
-
-from clientHTTP.ClientHTTP import ClientHTTP
+import numpy as np
 from tools import *
 
 
@@ -54,7 +53,6 @@ def roulette_select_population(evaluated_population: list[tuple[float, list[City
 
     new_pop = []
     for i in range(size):
-        print(f"DBG {i}")
         r = random.uniform(0, total)
         cumulative = 0.0
         for (dist, path), w in zip(evaluated_population, weights):
@@ -114,35 +112,29 @@ def mutation(
 
     return nouvelle_population
 
-client = ClientHTTP()
-test_instance_id = "regions"
-instance = client.get_instance(test_instance_id)
+def solve_tsp(cities: list[City], size_pop: int, iterations: int):
 
-raw_points = instance.get("cities", [])
+    pop = create_random_population(cities, size_pop)
+    eval_pop = evaluate_population(pop)
 
-cities = [
-    City(index, (latitude, longitude))
-    for index, (longitude, latitude) in enumerate(raw_points)
-]
+    for i in range(iterations):
+        selected = roulette_select_population(eval_pop, size_pop // 2)
 
-pop =create_random_population(cities, 5)
-eval_pop = evaluate_population(pop)
+        pop = mutation(selected, size_pop)
 
-selected = roulette_select_population(eval_pop, 3)
-print("\n\nSELECTED : \n")
-i =0
-for c in selected:
-    i+=1
-    print(f"Path {i} : {c}")
-print()
+        eval_pop = evaluate_population(pop)
 
-mutant = mutation(selected, 5)
+    min = np.inf
+    result = []
 
-print("\n\nMUTANT : \n")
-i =0
-for m in mutant:
-    i+=1
-    print(f"Path {i} : {m}")
+    for sample in eval_pop:
+        if sample[0] < min:
+            min = sample[0]
+            result = sample[1]
+
+    return result
+
+
 
 
 
